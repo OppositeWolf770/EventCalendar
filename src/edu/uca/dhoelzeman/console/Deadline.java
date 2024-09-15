@@ -3,8 +3,7 @@ package edu.uca.dhoelzeman.console;
 import java.util.Date;
 
 public class Deadline extends Event implements Completable {
-    private Date endDatetime;
-    private String location;
+    private boolean complete;
 
     @Override
     public void complete() {
@@ -13,25 +12,6 @@ public class Deadline extends Event implements Completable {
 
     @Override
     public boolean isComplete() {
-        return false;
-    }
-
-    public Date getEndTime() {
-
-        return new Date();
-    }
-
-    public int getDuration() {
-
-        return 0;
-    }
-
-    public String getLocation() {
-        return this.location;
-    }
-
-    public void setEndTime(Date end) {
-
-        this.endDatetime = end;
+        return complete;
     }
 }

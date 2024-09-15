@@ -7,13 +7,11 @@ public abstract class Event implements Comparable<Event> {
     private Date dateTime;
 
     public String getName() {
-
-        return "";
+        return this.name;
     }
 
     public Date getDateTime() {
-
-        return new Date();
+        return dateTime;
     }
 
     public void setDateTime(Date dateTime) {
@@ -25,7 +23,6 @@ public abstract class Event implements Comparable<Event> {
     }
 
     public int compareTo(Event e) {
-
         return 0;
     }
 }
