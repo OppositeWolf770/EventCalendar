@@ -1,20 +1,27 @@
 package edu.uca.dhoelzeman.console;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 
 public abstract class Event implements Comparable<Event> {
-    private String name;
-    private Date dateTime;
+    String name;
+    private LocalDateTime dateTime;
 
-    public String getName() {
-        return this.name;
+    // Constructor
+    public Event(String name, LocalDateTime dateTime) {
+        this.setName(name);
+        this.setDateTime(dateTime);
     }
 
-    public Date getDateTime() {
+
+    public abstract String getName();
+
+    public LocalDateTime getDateTime() {
+
         return dateTime;
     }
 
-    public void setDateTime(Date dateTime) {
+    public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
