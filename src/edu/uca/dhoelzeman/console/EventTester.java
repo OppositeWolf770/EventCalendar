@@ -89,14 +89,12 @@ public class EventTester {
     public static boolean testComparingEvents() {
         Arrays.sort(events);
 
-        boolean equals = events[0] == firstMeeting
+        return events[0] == firstMeeting
                 && events[1] == midMeeting
                 && events[2] == lastMeeting
                 && events[3] == firstDeadline
                 && events[4] == midDeadline
                 && events[5] == lastDeadline;
-
-        return equals;
     }
 
     public static boolean testMeetingDuration() {

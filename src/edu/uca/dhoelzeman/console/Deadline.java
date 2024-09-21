@@ -12,13 +12,6 @@ public class Deadline extends Event implements Completable {
     }
 
 
-    // Getter for the name of the Deadline
-    @Override
-    public String getName() {
-        return name;
-    }
-
-
     // Sets complete to true
     @Override
     public void complete() {
@@ -26,7 +19,7 @@ public class Deadline extends Event implements Completable {
     }
 
 
-    // Returns the complete boolean indicating whether the Deadline is complete
+    // Returns the status of the deadline (Complete/Incomplete)
     @Override
     public boolean isComplete() {
         return complete;

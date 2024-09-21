@@ -14,8 +14,17 @@ public abstract class Event implements Comparable<Event> {
     }
 
 
-    public abstract String getName();
+    // name getter and setter
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    // dateTime getter and setter
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -24,10 +33,14 @@ public abstract class Event implements Comparable<Event> {
         this.dateTime = dateTime;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
+    /**
+     * Compares an event starting time to another event starting time
+     * @param e the event to be compared.
+     * @return a negative integer, zero, or a positive integer
+     * as this object is less than, equal to, or greater than
+     * the specified object.
+     */
     public int compareTo(Event e) {
         return dateTime.compareTo(e.dateTime);
     }

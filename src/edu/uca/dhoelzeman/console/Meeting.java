@@ -17,37 +17,41 @@ public class Meeting extends Event implements Completable {
     }
 
 
-    // Sets complete to true
+    // Marks the meeting as completed
     public void complete() {
         complete = true;
     }
 
+
+    // Returns the status of the meeting (Complete/Incomplete)
     public boolean isComplete() {
         return complete;
     }
 
+
+    // endDateTime getter and setter
     public LocalDateTime getEndDateTime() {
         return endDateTime;
-    }
-
-    public Duration getDuration() {
-        return Duration.between(getDateTime(), getEndDateTime());
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     public void setEndDateTime(LocalDateTime end) {
         endDateTime = end;
     }
 
+
+    // Returns the duration from the start and end time
+    public Duration getDuration() {
+        return Duration.between(getDateTime(), getEndDateTime());
+    }
+
+
+    // location getter and setter
+    public String getLocation() {
+        return location;
+    }
+
     public void setLocation(String location) {
         this.location = location;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
 }
