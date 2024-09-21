@@ -1,12 +1,7 @@
 package edu.uca.dhoelzeman.gui;
 
-import edu.uca.dhoelzeman.console.Deadline;
-import edu.uca.dhoelzeman.console.Meeting;
-import edu.uca.dhoelzeman.console.TestEvent;
-
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDateTime;
 
 public class EventPlanner {
     public static void main(String[] args) {
