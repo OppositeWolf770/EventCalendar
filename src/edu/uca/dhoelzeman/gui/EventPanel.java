@@ -8,14 +8,14 @@ import javax.swing.*;
 import java.time.LocalDateTime;
 
 public class EventPanel extends JPanel {
-    private Event event;
+    private final Event event;
     private JButton completeButton;
 
     public EventPanel(Event e) {
         event = e;
 
         if (event instanceof Completable) {
-            completeButton = new JButton("Button1");
+            completeButton = new JButton("Mark Complete");
 
             add(completeButton);
         }

@@ -8,7 +8,7 @@ public class EventPlanner {
         var frame = new JFrame("Event Planner");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1000, 600));
-        frame.setResizable(false);
+//        frame.setResizable(false);
         frame.setIconImage(new ImageIcon("src/images/calendar.png").getImage());
 
         frame.add(new EventListPanel());
