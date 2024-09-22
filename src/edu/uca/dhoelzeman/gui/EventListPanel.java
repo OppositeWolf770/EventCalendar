@@ -13,30 +13,30 @@ import java.util.ArrayList;
 
 public class EventListPanel extends JPanel {
     ArrayList<Event> events = new ArrayList<>();
-    JPanel controlPanel = new JPanel();
-    JPanel displayPanel = new JPanel();
-    JComboBox sortDropDown;
-    JCheckBox filterDisplay;
+    // Set up the control panel
     JButton addEventButton = new JButton("Add Event");
-
-    String[] sortOptions = new String[] {
-            "Name",
-            "Date",
-
+    JComboBox<String> sortDropDown = new JComboBox<>() {
+        {
+            addItem("Name");
+            addItem("Date");
+        }
     };
+    JPanel controlPanel = new JPanel() {
+        {
+            setPreferredSize(new Dimension(0, 100));
+            setBackground(new Color(0xFF00FF));
+            add(addEventButton);
+            add(sortDropDown);
+        }
+    };
+    JPanel displayPanel = new JPanel();
+    JCheckBox filterDisplay;
 
     EventListPanel() {
         setPreferredSize(new Dimension(750, 1000));
 
         // Use BoxLayout for vertical alignment
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        // Set up the controlPanel
-        controlPanel.setPreferredSize(new Dimension(0, 100));
-        controlPanel.setBackground(new Color(0xFF00FF));
-        controlPanel.add(addEventButton);
-
-//        controlPanel.add(sortDropDown);
 
         add(controlPanel);
 

@@ -53,5 +53,4 @@ public class Meeting extends Event implements Completable {
     public void setLocation(String location) {
         this.location = location;
     }
-
 }
