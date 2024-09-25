@@ -33,9 +33,10 @@ public class Deadline extends Event implements Completable {
     public ArrayList<String> getDisplayStrings() {
         ArrayList<String> displayStrings = new ArrayList<>();
 
-        displayStrings.add(getName());
-        displayStrings.add(getDateTime().format(formatter)); // Formats the due date
-        displayStrings.add(isComplete() ? "Completed" : "Incomplete");
+        // Display the name, due date, and completion status
+        displayStrings.add(getName() + spacer);
+        displayStrings.add(getDateTime().format(formatter) + spacer); // Formats the due date
+        displayStrings.add(isComplete() ? "Completed" : "Incomplete" + spacer);
 
 
         return displayStrings;

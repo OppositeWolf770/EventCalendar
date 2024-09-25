@@ -10,7 +10,10 @@ public abstract class Event implements Comparable<Event> {
     private LocalDateTime dateTime;
 
     // The formatter used to display LocalDateTime to the user
-    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy h:mm a");
+    protected static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy h:mm a");
+
+    // Spaces out the data in the display
+    protected static final String spacer = "      ";
 
 
     // Constructor
@@ -45,5 +48,7 @@ public abstract class Event implements Comparable<Event> {
         return dateTime.compareTo(e.dateTime);
     }
 
+
+    // Returns an array of strings to be used when displaying the Events
     public abstract ArrayList<String> getDisplayStrings();
 }

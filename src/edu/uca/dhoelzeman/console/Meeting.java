@@ -11,11 +11,11 @@ public class Meeting extends Event implements Completable {
     private boolean complete;
 
 
-    // Constructor
+    // Constructor sets the private data fields appropriately
     public Meeting(String name, LocalDateTime start, LocalDateTime end, String location) {
         super(name, start);
-        this.setEndDateTime(end);
-        this.setLocation(location);
+        setEndDateTime(end);
+        setLocation(location);
     }
 
 
@@ -60,12 +60,36 @@ public class Meeting extends Event implements Completable {
     // Returns an array of strings describing the Meeting
     public ArrayList<String> getDisplayStrings() {
         ArrayList<String> displayStrings = new ArrayList<>();
+        final int hoursToMin = 60;
 
-        displayStrings.add(getName());
-        displayStrings.add(getDateTime().format(formatter));
-        displayStrings.add(getDuration().toHours() + " Hours");
-        displayStrings.add(getLocation());
-        displayStrings.add(isComplete() ? "Completed" : "Incomplete");
+
+        // Add the name and time of the Meeting
+        displayStrings.add(getName() + spacer);
+        displayStrings.add(getDateTime().format(formatter) + spacer); // Formats the start date
+
+        // Calculate the duration of the meeting in hours and minutes
+        long hours = getDuration().toHours();
+        long minutes = getDuration().toMinutes();
+
+        // Only display hours if it is an hour or longer
+        if (hours > 0) {
+            displayStrings.add(hours + " Hours");
+
+            // Get the remaining minutes after the hour is added
+            minutes -= (hours * hoursToMin);
+        }
+
+        // Display the minutes if necessary
+        if (minutes > 0) {
+            displayStrings.add(" " + minutes + " Minutes");
+        }
+
+        // Add the spacer after the Duration display
+        displayStrings.add(spacer);
+
+        // Add the location and completion status
+        displayStrings.add(getLocation() + spacer);
+        displayStrings.add(isComplete() ? "Completed" : "Incomplete" + spacer);
 
         return displayStrings;
     }
