@@ -3,6 +3,7 @@ package edu.uca.dhoelzeman.gui;
 import edu.uca.dhoelzeman.console.Deadline;
 import edu.uca.dhoelzeman.console.Meeting;
 
+import javax.smartcardio.Card;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -11,17 +12,20 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class AddEventModal extends JDialog {
-    AddEventModal modal;
+    private final AddEventModal modal;
 
+    // Constructor initializes the modal
     public AddEventModal(EventListPanel eventListPanel) {
         modal = this;
         setModal(true);
         setSize(600, 350);
         setLocationRelativeTo(eventListPanel);
 
+        // Sets the title and close operation
         setTitle("Add Event");
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
+        // Adds the panel to show the components of the modal
         var addEventPanel = new AddEventPanel(eventListPanel);
         add(addEventPanel);
 
@@ -29,41 +33,56 @@ public class AddEventModal extends JDialog {
     }
 
 
+    // The panel to hold the contents of the modal window
     private class AddEventPanel extends JPanel {
-        private final CardLayout cardLayout;
-        private final JPanel cardPanel;
+        // Constants for the eventOptionsBox
+        private static final String meetingOption = "Meeting";
+        private static final String deadlineOption = "Deadline";
 
+        // The combo box to choose the type of meeting to add
+        JComboBox<String> eventOptionsBox = new JComboBox<>() {
+            {
+                addItem(meetingOption);
+                addItem(deadlineOption);
+            }
+        };
+
+        // Panel to hold the eventOptionsBox
+        JPanel eventOptionsPanel = new JPanel() {
+            {
+                new Label("Event Type:");
+                add(eventOptionsBox);
+            }
+        };
+
+        // Panel to hold the addEventButton to add an event to the display
+        JButton addEventButton = new JButton("Submit");
+        JPanel addEventButtonPanel = new JPanel() {
+            {
+                add(addEventButton);
+            }
+        };
+
+        // Meeting panel
+        MeetingCard meetingCard = new MeetingCard();
+
+        // Deadline panel
+        DeadlineCard deadlineCard = new DeadlineCard();
+
+        // Create CardLayout panel
+        CardLayout cardLayout = new CardLayout();
+        JPanel cardPanel = new JPanel(cardLayout) {
+            {
+                // Add the event panels to the cardPanel
+                add(meetingCard, meetingOption);
+                add(deadlineCard, deadlineOption);
+            }
+        };
+
+        // Constructor initializes
         public AddEventPanel(EventListPanel eventListPanel) {
+            // Use BoxLayout on the Y_AXIS for a vertical layout
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-            var eventOptionsPanel = new JPanel();
-            var addEventButtonPanel = new JPanel();
-
-            JButton addEventButton = new JButton("Submit");
-            addEventButtonPanel.add(addEventButton);
-
-            // The combo box to choose the type of meeting to add
-            JComboBox<String> eventOptionsBox = new JComboBox<>();
-            eventOptionsBox.addItem("Meeting");
-            eventOptionsBox.addItem("Deadline");
-
-            JLabel eventOptionsLabel = new JLabel("Event Type:");
-            eventOptionsPanel.add(eventOptionsLabel);
-            eventOptionsPanel.add(eventOptionsBox);
-
-            // Create CardLayout panel
-            cardLayout = new CardLayout();
-            cardPanel = new JPanel(cardLayout);
-
-            // Meeting panel
-            MeetingCard meetingCard = new MeetingCard();
-
-            // Deadline panel
-            DeadlineCard deadlineCard = new DeadlineCard();
-
-            // Add panels to CardLayout
-            cardPanel.add(meetingCard, "Meeting");
-            cardPanel.add(deadlineCard, "Deadline");
 
             // Adds all the pieces to the modal
             add(eventOptionsPanel);
@@ -83,15 +102,15 @@ public class AddEventModal extends JDialog {
                 String selectedItem = (String) eventOptionsBox.getSelectedItem();
 
                 // Adds a Meeting to the eventListPanel
-                if ("Meeting".equals(selectedItem)) {
+                if (meetingOption.equals(selectedItem)) {
                     // Converts the start time to a LocalDateTime
-                    var start = convertToLocalDateTime(
+                    LocalDateTime start = convertToLocalDateTime(
                             meetingCard.startPanel.getDateString(),
                             meetingCard.startPanel.getTimeString()
                     );
 
                     // Converts the end time to a LocalDateTime
-                    var end = convertToLocalDateTime(
+                    LocalDateTime end = convertToLocalDateTime(
                             meetingCard.endPanel.getDateString(),
                             meetingCard.endPanel.getTimeString()
                     );
@@ -112,9 +131,9 @@ public class AddEventModal extends JDialog {
                     );
 
                 // Add a Deadline to the eventListPanel
-                } else if ("Deadline".equals(selectedItem)) {
+                } else if (deadlineOption.equals(selectedItem)) {
                     // Convert the due time to a LocalDateTime
-                    var dateTime = convertToLocalDateTime(
+                    LocalDateTime dateTime = convertToLocalDateTime(
                             deadlineCard.dueDateTime.getDateString(),
                             deadlineCard.dueDateTime.getTimeString()
                     );
@@ -142,29 +161,28 @@ public class AddEventModal extends JDialog {
 
     // The panel to obtain LocalDateTime data from the user
     private static class LocalDateTimePanel extends JPanel {
-        private final JTextField dateField;
-        private final JTextField timeField;
+        private final JTextField dateField = new JTextField(10);
+        private final JTextField timeField = new JTextField(5);
 
         public LocalDateTimePanel() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-            var datePanel = new JPanel();
-
-            JLabel dateLabel = new JLabel("Enter date(yyyy-MM-dd):");
-            dateField = new JTextField(10);
-
-            datePanel.add(dateLabel);
-            datePanel.add(dateField);
-
-            var timePanel = new JPanel();
-
-            JLabel timeLabel = new JLabel("Enter time(HH:mm):");
-            timeField = new JTextField(5);
-
-            timePanel.add(timeLabel);
-            timePanel.add(timeField);
-
+            // Panel to hold the date information
+            JPanel datePanel = new JPanel() {
+                {
+                    add(new JLabel("Enter date(yyyy-MM-dd):"));
+                    add(dateField);
+                }
+            };
             add(datePanel);
+
+            // Panel to hold the time information
+            JPanel timePanel = new JPanel() {
+                {
+                    add(new JLabel("Enter time(HH:mm):"));
+                    add(timeField);
+                }
+            };
             add(timePanel);
         }
 
@@ -182,13 +200,10 @@ public class AddEventModal extends JDialog {
 
     // The panel to obtain Location data from the user
     private static class LocationPanel extends JPanel {
-        JTextField locationField;
+        private final JTextField locationField = new JTextField(10);
 
         public LocationPanel() {
-            JLabel locationLabel = new JLabel("Location:");
-            locationField = new JTextField(10);
-
-            add(locationLabel);
+            add(new JLabel("Location:"));
             add(locationField);
         }
 
@@ -201,13 +216,10 @@ public class AddEventModal extends JDialog {
 
     // The panel to obtain Name data from the user
     private static class NamePanel extends JPanel {
-        JTextField nameField;
+        private final JTextField nameField = new JTextField(10);
 
         public NamePanel() {
-            JLabel nameLabel = new JLabel("Name:");
-            nameField = new JTextField(10);
-
-            add(nameLabel);
+            add(new JLabel("Name:"));
             add(nameField);
         }
 
@@ -220,17 +232,20 @@ public class AddEventModal extends JDialog {
 
     // The panel to hold the contents of the Meeting Card when option is selected
     private static class MeetingCard extends JPanel {
-        NamePanel namePanel = new NamePanel();
-        LocalDateTimePanel startPanel = new LocalDateTimePanel();
-        LocalDateTimePanel endPanel = new LocalDateTimePanel();
-        LocationPanel locationPanel = new LocationPanel();
+        private final NamePanel namePanel = new NamePanel();
+        private final LocalDateTimePanel startPanel = new LocalDateTimePanel();
+        private final LocalDateTimePanel endPanel = new LocalDateTimePanel();
+        private final LocationPanel locationPanel = new LocationPanel();
 
+        public static final int borderWidth = 1;
+
+        // Constructor
         MeetingCard() {
             // Sets the layout to BoxLayout for a Vertical alignment
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-            // Creates a border for use in the Meeting Card
-            Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+            // Creates a border for use in the labels
+            Border border = BorderFactory.createLineBorder(Color.BLACK, borderWidth);
 
             add(namePanel);
 
@@ -254,9 +269,10 @@ public class AddEventModal extends JDialog {
 
     // The panel to hold the contents of the Deadline Card when option is selected
     private static class DeadlineCard extends JPanel {
-        NamePanel namePanel = new NamePanel();
-        LocalDateTimePanel dueDateTime = new LocalDateTimePanel();
+        private final NamePanel namePanel = new NamePanel();
+        private final LocalDateTimePanel dueDateTime = new LocalDateTimePanel();
 
+        // Constructor
         DeadlineCard() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             add(namePanel);
@@ -267,14 +283,23 @@ public class AddEventModal extends JDialog {
 
     // Takes a given date and time (strings) and converts to a LocalDateTime object
     private LocalDateTime convertToLocalDateTime(String date, String time) {
+        // Formats the string input into a LocalDateTime with the given pattern
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        // Concatenates the date and time into the format provided
         String dateTimeString = date + "T" + time;
 
         // Parses the LocalDateTime and returns an error window if unsuccessful
         try {
             return LocalDateTime.parse(dateTimeString, formatter);
         } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(null, "Invalid format for LocalDateTime.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Invalid format for LocalDateTime. Make sure to add a 0 before numbers that are a single character!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
             return null;
         }
     }
