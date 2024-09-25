@@ -13,7 +13,7 @@ public class EventPlanner {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1000, 600));
         frame.setLocation(200, 200);
-//        frame.setResizable(false);
+        frame.setResizable(false);
         frame.setIconImage(new ImageIcon("src/images/calendar.png").getImage());
 
         var eventListPanel = new EventListPanel();
@@ -27,8 +27,29 @@ public class EventPlanner {
     }
 
     static void addDefaultEvents(EventListPanel eventListPanel) {
-        eventListPanel.events.add(new Meeting("B", LocalDateTime.of(2003, 3, 7, 13, 30), LocalDateTime.of(2003, 3, 7, 12, 35), "Default Location"));
-        eventListPanel.events.add(new Deadline("A", LocalDateTime.of(2003, 3, 7, 12, 30)));
+        final LocalDateTime now = LocalDateTime.now();
+
+        // Creates events with the current date/time as the event starting time
+        eventListPanel.events.add(
+                new Meeting(
+                        "Dr. Baarsch's Java Class",
+                        now,
+                        LocalDateTime.of(
+                                now.getYear(),
+                                now.getMonth(),
+                                now.getDayOfMonth(),
+                                now.getHour() + 2, // Adds 2 hours to the default meeting so the Duration can be calculated
+                                now.getMinute() + 1
+                        ),
+                        "MCS 339"
+                )
+        );
+        eventListPanel.events.add(
+                new Deadline(
+                        "Lab 2 Due",
+                        LocalDateTime.of(2024, 9, 25, 15, 0)
+                )
+        );
 
         eventListPanel.addOrUpdateEvents();
     }

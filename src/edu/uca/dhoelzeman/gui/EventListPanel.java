@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class EventListPanel extends JPanel {
     ArrayList<Event> events = new ArrayList<>();
@@ -37,11 +38,40 @@ public class EventListPanel extends JPanel {
         }
     };
 
+    // Contained in the displayPanel to hold the events that are displayed
+    JPanel eventsPanel = new JPanel() {
+        {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        }
+    };
+
+
     // The panel to hold the Events
     JPanel displayPanel = new JPanel() {
+        public static final int fontSize = 24;
+        public static final int preferredHeight = 400;
+
         {
-//            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-            setLayout(new GridLayout(0, 1));
+            setPreferredSize(new Dimension(0, preferredHeight));
+
+            // Use BorderLayout to separate the events from the events label
+            setLayout(new BorderLayout());
+
+            // Add the panel for the events label and places it to the north of the BorderLayout
+            add(new JPanel() {
+                {
+                    // Adds the label for the Events (HTML used for underline)
+                    add(new JLabel("<html><u>EVENTS</u></html>") {
+                        {
+                            // Gets the font and applies a larger font size for the label
+                            Font font = getFont();
+                            setFont(new Font(font.getName(), font.getStyle(), fontSize));
+                        }
+                    });
+                }
+            }, BorderLayout.NORTH);
+
+            add(eventsPanel, BorderLayout.CENTER);
         }
     };
 
@@ -49,6 +79,9 @@ public class EventListPanel extends JPanel {
     JCheckBox showCompleted = new JCheckBox(filterCompleted);
     JCheckBox showMeetings = new JCheckBox(filterMeetings, true);
     JCheckBox showDeadlines = new JCheckBox(filterDeadlines, true);
+
+    private static final int preferredWidth = 750;
+    public static final int preferredHeight = 1000;
 
     // Holds the filter checkboxes
     JPanel filterPanel = new JPanel() {
@@ -59,22 +92,27 @@ public class EventListPanel extends JPanel {
         }
     };
 
+
     // Control panel to hold the display controls
     JPanel controlPanel = new JPanel() {
+        private static final int maxHeight = 100;
+
         {
-            setPreferredSize(new Dimension(0, 100));
+            setMaximumSize(new Dimension(Integer.MAX_VALUE, maxHeight));
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
             add(new JPanel() {
                 {
                     add(addEventButton);
+                    add(new JLabel("Sort By:"));
+                    add(sortDropDown);
                 }
             });
 
             // Holds the main controls
             add(new JPanel() {
                 {
-                    add(new JLabel("Sort By:"));
-                    add(sortDropDown);
                     add(filterPanel);
                 }
             });
@@ -82,22 +120,16 @@ public class EventListPanel extends JPanel {
     };
 
 
-    // Constructor for the EventListPanel adds all the functionality
+    // Constructor for the EventListPanel adds the two panels
     EventListPanel() {
-        setPreferredSize(new Dimension(750, 1000));
+        setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 
         // Use BoxLayout for vertical alignment
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+
         add(controlPanel);
-
-        // Set up the displayPanel
-        displayPanel.setPreferredSize(new Dimension(0, 400));
-
         add(displayPanel);
-
-        // Initially displays the events on instance creation
-        addOrUpdateEvents();
 
         // Add Event Button listener for click
         addEventButton.addActionListener(_ -> {
@@ -106,12 +138,21 @@ public class EventListPanel extends JPanel {
         });
 
         // Add Event Listeners for filter checkboxes (All call the addOrUpdateEvents method)
-        showCompleted.addActionListener(e -> addOrUpdateEvents());
-        showMeetings.addActionListener(e -> addOrUpdateEvents());
-        showDeadlines.addActionListener(e -> addOrUpdateEvents());
+        addActionListeners(showCompleted, showMeetings, showDeadlines);
 
         // Action Listener for the sort box
         sortDropDown.addActionListener(e -> addOrUpdateEvents());
+
+        // Initially displays the events on instance creation
+        addOrUpdateEvents();
+    }
+
+
+    // Contains the logic to add the event listener to a check box
+    private void addActionListeners(JCheckBox... components) {
+        for (var component : components) {
+            component.addActionListener(e -> addOrUpdateEvents());
+        }
     }
 
 
@@ -119,41 +160,24 @@ public class EventListPanel extends JPanel {
         EventListPanel. Adds Events to the display according to all selected filters
         and sort options. */
     void addOrUpdateEvents() {
-        displayPanel.removeAll(); // Initially remove all events from the displayPanel
+        final int gapHeight = 10;
 
-        ArrayList<Event> filteredEvents = new ArrayList<>();
+        eventsPanel.removeAll(); // Initially remove all events from the displayPanel
 
-        // Loops through each event and checks if it is displayed based on criteria
-        for (Event event : events) {
-            boolean addEvent = true;
-
-            // Logic for the showCompleted checkBox
-            if (!showCompleted.isSelected() && event instanceof Completable && ((Completable) event).isComplete()) {
-                addEvent = false;
-            }
-
-            // Logic for the showMeetings checkBox
-            if (addEvent && !showMeetings.isSelected() && event instanceof Meeting) {
-                addEvent = false;
-            }
-
-            // Logic for the showDeadlines checkBox
-            if (addEvent && !showDeadlines.isSelected() && event instanceof Deadline) {
-                addEvent = false;
-            }
-
-            // If the event needs to be displayed, add it to the filteredEvents array
-            if (addEvent) {
-                filteredEvents.add(event);
-            }
-        }
+        // Use a stream to filter the events based on user choice, and collect it in an ArrayList of Events
+        ArrayList<Event> filteredEvents = events.stream()
+                .filter(event -> showCompleted.isSelected() || !((Completable) event).isComplete())
+                .filter(event -> showMeetings.isSelected() || !(event instanceof Meeting))
+                .filter(event -> showDeadlines.isSelected() || !(event instanceof Deadline))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         // Sort the filtered events according to selected sort option
         sortEvents(filteredEvents);
 
         // Loop through each event in the filteredEvents array and add it to the displayPanel
         for (Event event : filteredEvents) {
-            displayPanel.add(new EventPanel(event, this));
+            eventsPanel.add(new EventPanel(event, this));
+            eventsPanel.add(Box.createRigidArea(new Dimension(0, gapHeight))); // Adds padding between events
         }
 
         // Refresh the Frame with the updated events to display
@@ -162,8 +186,8 @@ public class EventListPanel extends JPanel {
     }
 
 
-    // Sorts the events as specified
-    public void sortEvents(ArrayList<Event> eventsToSort) {
+    // Sorts the events as specified by the user's selection
+    private void sortEvents(ArrayList<Event> eventsToSort) {
         String sortBy = (String) sortDropDown.getSelectedItem();
 
         // Logic for sorting by Name
