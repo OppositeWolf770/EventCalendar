@@ -5,12 +5,10 @@ import edu.uca.dhoelzeman.console.Meeting;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.xml.stream.Location;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Objects;
 
 public class AddEventModal extends JDialog {
     AddEventModal modal;
@@ -103,6 +101,7 @@ public class AddEventModal extends JDialog {
                         return;
                     }
 
+                    // Add the Meeting to the eventListPanel
                     eventListPanel.events.add(
                             new Meeting(
                                     meetingCard.namePanel.getNameString(),
@@ -112,16 +111,20 @@ public class AddEventModal extends JDialog {
                             )
                     );
 
+                // Add a Deadline to the eventListPanel
                 } else if ("Deadline".equals(selectedItem)) {
+                    // Convert the due time to a LocalDateTime
                     var dateTime = convertToLocalDateTime(
                             deadlineCard.dueDateTime.getDateString(),
                             deadlineCard.dueDateTime.getTimeString()
                     );
 
+                    // Early return if the dateTime was not successfully converted
                     if (dateTime == null) {
                         return;
                     }
 
+                    // Add a new Deadline to the eventListPanel
                     eventListPanel.events.add(
                             new Deadline(
                                     deadlineCard.namePanel.getNameString(),
@@ -165,10 +168,12 @@ public class AddEventModal extends JDialog {
             add(timePanel);
         }
 
+        // Returns the contents of the dateField
         public String getDateString() {
             return dateField.getText();
         }
 
+        // Returns the contents of the timeField
         public String getTimeString() {
             return timeField.getText();
         }

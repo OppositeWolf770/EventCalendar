@@ -56,6 +56,8 @@ public class Meeting extends Event implements Completable {
         this.location = location;
     }
 
+
+    // Returns an array of strings describing the Meeting
     public ArrayList<String> getDisplayStrings() {
         ArrayList<String> displayStrings = new ArrayList<>();
 

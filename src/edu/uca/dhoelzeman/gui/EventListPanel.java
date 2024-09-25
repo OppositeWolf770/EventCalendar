@@ -12,24 +12,43 @@ import java.util.Comparator;
 
 public class EventListPanel extends JPanel {
     ArrayList<Event> events = new ArrayList<>();
-    // Set up the control panel
+
+    // Constants for the sort options
+    private static final String sortName = "Name";
+    private static final String sortReverseName = "Reverse Name";
+    private static final String sortDate = "Date";
+    private static final String sortReverseDate = "Reverse Date";
+
+    // Constants for the filter options
+    private static final String filterCompleted = "Show Completed";
+    private static final String filterMeetings = "Show Meetings";
+    private static final String filterDeadlines = "Show Deadlines";
+
+    // Button to add an event to the display
     JButton addEventButton = new JButton("Add Event");
 
     // The sortbox with the options to sort by
     JComboBox<String> sortDropDown = new JComboBox<>() {
         {
-            addItem("Name");
-            addItem("Reverse Name");
-            addItem("Date");
-            addItem("Reverse Date");
+            addItem(sortName);
+            addItem(sortReverseName);
+            addItem(sortDate);
+            addItem(sortReverseDate);
         }
     };
-    JPanel displayPanel = new JPanel(); // The panel to hold the Events
+
+    // The panel to hold the Events
+    JPanel displayPanel = new JPanel() {
+        {
+//            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setLayout(new GridLayout(0, 1));
+        }
+    };
 
     // The checkboxes to filter the display
-    JCheckBox showCompleted = new JCheckBox("Show Completed");
-    JCheckBox showMeetings = new JCheckBox("Show Meetings", true);
-    JCheckBox showDeadlines = new JCheckBox("Show Deadlines", true);
+    JCheckBox showCompleted = new JCheckBox(filterCompleted);
+    JCheckBox showMeetings = new JCheckBox(filterMeetings, true);
+    JCheckBox showDeadlines = new JCheckBox(filterDeadlines, true);
 
     // Holds the filter checkboxes
     JPanel filterPanel = new JPanel() {
@@ -40,7 +59,7 @@ public class EventListPanel extends JPanel {
         }
     };
 
-    // Holds the controls for the display of the events
+    // Control panel to hold the display controls
     JPanel controlPanel = new JPanel() {
         {
             setPreferredSize(new Dimension(0, 100));
@@ -148,21 +167,21 @@ public class EventListPanel extends JPanel {
         String sortBy = (String) sortDropDown.getSelectedItem();
 
         // Logic for sorting by Name
-        if ("Name".equals(sortBy)) {
+        if (sortName.equals(sortBy)) {
             eventsToSort.sort(Comparator.comparing(Event::getName));
 
         // Logic for sorting by Name in reverse
-        } else if ("Reverse Name".equals(sortBy)) {
+        } else if (sortReverseName.equals(sortBy)) {
             eventsToSort.sort(Comparator.comparing(Event::getName).reversed());
         }
 
         // Logic for sorting by Date
-        else if ("Date".equals(sortBy)) {
+        else if (sortDate.equals(sortBy)) {
             eventsToSort.sort(Comparator.comparing(Event::getDateTime));
         }
 
         // Logic for sorting by Date in reverse
-        else if ("Reverse Date".equals(sortBy)) {
+        else if (sortReverseDate.equals(sortBy)) {
             eventsToSort.sort(Comparator.comparing(Event::getDateTime).reversed());
         }
     }

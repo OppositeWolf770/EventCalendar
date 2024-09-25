@@ -1,7 +1,6 @@
 package edu.uca.dhoelzeman.console;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Deadline extends Event implements Completable {
@@ -28,12 +27,14 @@ public class Deadline extends Event implements Completable {
         return complete;
     }
 
+
+    // Returns an array of strings describing the Deadline
     @Override
     public ArrayList<String> getDisplayStrings() {
         ArrayList<String> displayStrings = new ArrayList<>();
 
         displayStrings.add(getName());
-        displayStrings.add(getDateTime().format(formatter));
+        displayStrings.add(getDateTime().format(formatter)); // Formats the due date
         displayStrings.add(isComplete() ? "Completed" : "Incomplete");
 
 
