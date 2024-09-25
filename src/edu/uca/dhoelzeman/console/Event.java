@@ -2,10 +2,16 @@ package edu.uca.dhoelzeman.console;
 
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public abstract class Event implements Comparable<Event> {
     String name;
     private LocalDateTime dateTime;
+
+    // The formatter used to display LocalDateTime to the user
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy h:mm a");
+
 
     // Constructor
     public Event(String name, LocalDateTime dateTime) {
@@ -34,14 +40,10 @@ public abstract class Event implements Comparable<Event> {
     }
 
 
-    /**
-     * Compares an event starting time to another event starting time
-     * @param e the event to be compared.
-     * @return a negative integer, zero, or a positive integer
-     * as this object is less than, equal to, or greater than
-     * the specified object.
-     */
+    // Compares an event starting time to another event starting time
     public int compareTo(Event e) {
         return dateTime.compareTo(e.dateTime);
     }
+
+    public abstract ArrayList<String> getDisplayStrings();
 }

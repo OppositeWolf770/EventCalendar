@@ -2,6 +2,8 @@ package edu.uca.dhoelzeman.console;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class Meeting extends Event implements Completable {
     private LocalDateTime endDateTime;
@@ -52,5 +54,17 @@ public class Meeting extends Event implements Completable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public ArrayList<String> getDisplayStrings() {
+        ArrayList<String> displayStrings = new ArrayList<>();
+
+        displayStrings.add(getName());
+        displayStrings.add(getDateTime().format(formatter));
+        displayStrings.add(getDuration().toHours() + " Hours");
+        displayStrings.add(getLocation());
+        displayStrings.add(isComplete() ? "Completed" : "Incomplete");
+
+        return displayStrings;
     }
 }
