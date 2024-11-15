@@ -2,6 +2,7 @@ package edu.uca.dhoelzeman.gui;
 
 import edu.uca.dhoelzeman.console.Deadline;
 import edu.uca.dhoelzeman.console.Meeting;
+import edu.uca.dhoelzeman.console.MeetingDecorator;
 
 import javax.smartcardio.Card;
 import javax.swing.*;
@@ -122,10 +123,12 @@ public class AddEventModal extends JDialog {
 
                     // Add the Meeting to the eventListPanel
                     eventListPanel.events.add(
-                            new Meeting(
-                                    meetingCard.namePanel.getNameString(),
-                                    start,
-                                    end,
+                            new MeetingDecorator(
+                                    new Meeting(
+                                        meetingCard.namePanel.getNameString(),
+                                        start,
+                                        end
+                                    ),
                                     meetingCard.locationPanel.getLocationString()
                             )
                     );

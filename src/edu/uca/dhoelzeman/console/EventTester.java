@@ -20,9 +20,9 @@ public class EventTester {
     static String location = "MCS 321";
     static String locationAlt =  "MCS 339";
 
-    static Meeting firstMeeting = new Meeting("First Meeting", start, end, location);
-    static Meeting lastMeeting = new Meeting("Last Meeting", start.plusDays(4), end.plusDays(4), location);
-    static Meeting midMeeting = new Meeting("Middle Meeting", start.plusDays(2), end.plusDays(2), location);
+    static MeetingDecorator firstMeeting = new MeetingDecorator(new Meeting("First Meeting", start, end), location);
+    static MeetingDecorator lastMeeting = new MeetingDecorator(new Meeting("Last Meeting", start.plusDays(4), end.plusDays(4)), location);
+    static MeetingDecorator midMeeting = new MeetingDecorator(new Meeting("Middle Meeting", start.plusDays(2), end.plusDays(2)), location);
 
     static Event[] events = new Event[] {
         midDeadline,
@@ -39,7 +39,7 @@ public class EventTester {
             lastDeadline,
     };
 
-    static Meeting[] meetings = new Meeting[] {
+    static MeetingDecorator[] meetings = new MeetingDecorator[] {
             firstMeeting,
             midMeeting,
             lastMeeting,
@@ -110,7 +110,7 @@ public class EventTester {
             deadline.complete();
         }
         // complete all the meetings
-        for (Meeting meeting : meetings) {
+        for (MeetingDecorator meeting : meetings) {
             meeting.complete();
         }
         // check that the deadlines are complete
@@ -118,7 +118,7 @@ public class EventTester {
                 .allMatch(Deadline::isComplete);
         // check that the meetings are complete
         boolean meetingsPass = Stream.of(meetings)
-                .allMatch(Meeting::isComplete);
+                .allMatch(MeetingDecorator::isComplete);
         // return results
         return deadlinesPass && meetingsPass;
     }

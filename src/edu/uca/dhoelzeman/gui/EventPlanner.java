@@ -1,6 +1,7 @@
 package edu.uca.dhoelzeman.gui;
 
 import edu.uca.dhoelzeman.console.Deadline;
+import edu.uca.dhoelzeman.console.MeetingDecorator;
 import edu.uca.dhoelzeman.console.Meeting;
 
 import javax.swing.*;
@@ -21,7 +22,6 @@ public class EventPlanner {
 
         frame.add(eventListPanel);
 
-
         frame.pack();
         frame.setVisible(true);
     }
@@ -31,17 +31,19 @@ public class EventPlanner {
 
         // Creates events with the current date/time as the event starting time
         eventListPanel.events.add(
-                new Meeting(
-                        "Dr. Baarsch's Java Class",
-                        now,
-                        LocalDateTime.of(
-                                now.getYear(),
-                                now.getMonth(),
-                                now.getDayOfMonth(),
-                                now.getHour() + 2, // Adds 2 hours to the default meeting so the Duration can be calculated
-                                now.getMinute() + 1
-                        ),
-                        "MCS 339"
+                new MeetingDecorator(
+                    new Meeting(
+                            "Dr. Baarsch's Java Class",
+                            now,
+                            LocalDateTime.of(
+                                    now.getYear(),
+                                    now.getMonth(),
+                                    now.getDayOfMonth(),
+                                    now.getHour() + 2, // Adds 2 hours to the default meeting so the Duration can be calculated
+                                    now.getMinute() + 1
+                            )
+                    ),
+                    "MCS 339"
                 )
         );
         eventListPanel.events.add(
